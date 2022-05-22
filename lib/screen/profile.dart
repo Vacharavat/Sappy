@@ -3,6 +3,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sappyapp/components/profile_body.dart';
+import 'package:sappyapp/manager/auth.dart';
 import 'package:sappyapp/model/profile.dart';
 import 'package:sappyapp/screen/message_screen.dart';
 
@@ -14,27 +15,34 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfileState extends State<ProfilePage> {
-  // FirebaseAuth auth = FirebaseAuth.instance;
-  Profile? currentUser;
-  // User? user = auth.currentUser;
+  User? user = AuthManager().getCurrentUser();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ProfileAppBar(),
       body: Column(
         children: [
-          Expanded(
-              child: Container(
+          Container(
             decoration: BoxDecoration(border: Border(bottom: BorderSide())),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 20.0, vertical: 20.0 * 0.75),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0 * 0.75),
               child: Row(
                 children: [
-                  // CircleAvatar(
-                  //   radius: 30,
-                  //   backgroundImage: AssetImage(chat.image),
-                  // ),
+                  user?.photoURL != null
+                      ? CircleAvatar(
+                          radius: 30,
+                          backgroundImage: Image.network(user!.photoURL!).image,
+                        )
+                      : Container(
+                          height: 30,
+                          width: 30,
+                          child: Icon(
+                            Icons.logout,
+                            color: Colors.black,
+                            size: 24.0,
+                          ),
+                        ),
                   Expanded(
                       child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -42,9 +50,8 @@ class _ProfileState extends State<ProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          currentUser?.email ?? "",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w700),
+                          user?.displayName ?? "",
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                         ),
                         Text(
                           "bio",
@@ -58,7 +65,7 @@ class _ProfileState extends State<ProfilePage> {
                 ],
               ),
             ),
-          ))
+          )
         ],
       ),
     );
