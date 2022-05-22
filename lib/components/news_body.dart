@@ -1,0 +1,64 @@
+// ignore_for_file: non_constant_identifier_names
+
+import 'package:flutter/material.dart';
+import 'package:sappyapp/model/news_article.dart';
+import 'package:sappyapp/screen/news_details.dart';
+
+Widget NewsBody(Article article, BuildContext context) {
+  return InkWell(
+    onTap: () {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => NewsPage(article: article)));
+    },
+    child: Container(
+      margin: EdgeInsets.all(12.0),
+      padding: EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 3.0,
+            )
+          ]),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+              height: 200,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: NetworkImage(article.urlToImage),
+                      fit: BoxFit.cover),
+                  borderRadius: BorderRadius.circular(8.0))),
+          SizedBox(
+            height: 8.0,
+          ),
+          Text(
+            article.source.name,
+            style: TextStyle(color: Colors.black54),
+          ),
+          // Container(
+          //   padding: EdgeInsets.all(6.0),
+          //   decoration: BoxDecoration(
+          //     color: Colors.blue,
+          //     borderRadius: BorderRadius.circular(30.0),
+          //   ),
+          //   child: Text(
+          //     article.source.name,
+          //     style: TextStyle(color: Colors.black38),
+          //   ),
+          // ),
+          SizedBox(
+            height: 8.0,
+          ),
+          Text(article.title,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0))
+        ],
+      ),
+    ),
+  );
+}

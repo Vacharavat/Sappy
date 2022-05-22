@@ -1,52 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:loginsystem/screen/login.dart';
-import 'package:loginsystem/screen/register.dart';
+import 'package:sappyapp/screen/chat.dart';
+import 'package:sappyapp/screen/emotions.dart';
+import 'package:sappyapp/screen/news.dart';
+import 'package:sappyapp/screen/profile.dart';
+import 'package:sappyapp/screen/setting_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int currentIndex = 0;
+  final screens = [
+    ProfilePage(),
+    ChatScreen(),
+    EmotionScreen(),
+    NewsScreen(),
+    SettingScreen()
+  ];
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Register/Login"),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 50, 10, 0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Image.asset("assets/image/Logo1.png"),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    icon: Icon(Icons.add),
-                    label: Text("สร้างบัญชีผู้ใช้",
-                        style: TextStyle(fontSize: 20)),
-                    onPressed: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) {
-                        return RegisterScreen();
-                      }));
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    icon: Icon(Icons.login),
-                    label: Text("เข้าสู่ระบบ", style: TextStyle(fontSize: 20)),
-                    onPressed: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) {
-                        return LoginScreen();
-                      }));
-                    },
-                  ),
-                )
-              ],
+      body: screens[currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+          currentIndex: currentIndex,
+          onTap: (index) => setState(() => currentIndex = index),
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+              backgroundColor: Colors.blue,
             ),
-          ),
-        ));
+            BottomNavigationBarItem(
+              icon: Icon(Icons.chat),
+              label: 'Chat',
+              backgroundColor: Colors.blue,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.emoji_emotions),
+              label: 'Emotions',
+              backgroundColor: Colors.blue,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.chrome_reader_mode),
+              label: 'News',
+              backgroundColor: Colors.blue,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings_sharp),
+              label: 'Setting',
+              backgroundColor: Colors.blue,
+            ),
+          ]),
+    );
   }
 }

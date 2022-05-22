@@ -3,8 +3,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:loginsystem/model/profile.dart';
-import 'package:loginsystem/screen/welcome.dart';
+import 'package:sappyapp/model/profile.dart';
+import 'package:sappyapp/screen/profile_signup.dart';
+import 'package:sappyapp/screen/register.dart';
+import 'package:sappyapp/screen/welcome.dart';
 
 import 'home.dart';
 
@@ -35,20 +37,32 @@ class _LoginScreenState extends State<LoginScreen> {
           }
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
-              appBar: AppBar(
-                title: Text("เข้าสู่ระบบ"),
-              ),
               body: Container(
+                decoration: BoxDecoration(color: Color(0xFF61B3FF)),
+                alignment: Alignment.center,
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Form(
                     key: formKey,
                     child: SingleChildScrollView(
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("อีเมล", style: TextStyle(fontSize: 20)),
+                          Image.asset("assets/image/Logo1.png"),
                           TextFormField(
+                            decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: BorderSide(
+                                        color: Colors.white, width: 2.0)),
+                                hintText: 'name@example.com',
+                                prefixIcon: Icon(Icons.person)),
                             validator: MultiValidator([
                               RequiredValidator(errorText: "กรุณาป้อนอีเมล"),
                               EmailValidator(errorText: "รูปแบบอีเมลไม่ถูกต้อง")
@@ -61,19 +75,40 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(
                             height: 15,
                           ),
-                          Text("รหัสผ่าน", style: TextStyle(fontSize: 20)),
                           TextFormField(
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 2.0)),
+                              hintText: 'password',
+                              prefixIcon: Icon(Icons.lock),
+                            ),
                             validator: RequiredValidator(
                                 errorText: "กรุณาป้อนรหัสผ่าน"),
-                            obscureText: true,
                             onSaved: (String? password) {
                               profile.password = password!;
                             },
                           ),
                           SizedBox(
+                            height: 15,
+                          ),
+                          SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                                child: Text("ลงชื่อเข้าใช้",
+                                style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                    ),
+                                    primary: Color(0xFF0078E8),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 20, horizontal: 40)),
+                                child: Text("login",
                                     style: TextStyle(fontSize: 20)),
                                 onPressed: () async {
                                   if (formKey.currentState!.validate()) {
@@ -88,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         Navigator.pushReplacement(context,
                                             MaterialPageRoute(
                                                 builder: (context) {
-                                          return WelcomeScreen();
+                                          return HomeScreen();
                                         }));
                                       });
                                     } on FirebaseAuthException catch (e) {
@@ -98,6 +133,53 @@ class _LoginScreenState extends State<LoginScreen> {
                                     }
                                   }
                                 }),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Don't have an Account yet ? ",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              TextButton(
+                                  child: Text(
+                                    "Sign Up",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pushReplacement(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return RegisterScreen();
+                                    }));
+                                  }),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Profile for Sign Up ? ",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              TextButton(
+                                  child: Text(
+                                    "Tap Here",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pushReplacement(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return ProfileSign();
+                                    }));
+                                  }),
+                            ],
                           )
                         ],
                       ),
