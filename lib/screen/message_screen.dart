@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:sappyapp/components/message_body.dart';
 import 'package:dialog_flowtter/dialog_flowtter.dart';
+import 'package:sappyapp/screen/home.dart';
 
 class MessageScreen extends StatefulWidget {
   const MessageScreen({Key? key}) : super(key: key);
@@ -102,7 +103,12 @@ class _MessageScreenState extends State<MessageScreen> {
     return AppBar(
       automaticallyImplyLeading: false,
       title: Row(children: [
-        BackButton(),
+        BackButton(onPressed: () {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) {
+            return HomeScreen();
+          }));
+        }),
         // CircleAvatar(
         //   backgroundImage: AssetImage("assets/image/Bot.png"),
         // ),
