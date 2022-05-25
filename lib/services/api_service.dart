@@ -20,4 +20,8 @@ class ApiService {
       throw ("Can't get the Ariticles");
     }
   }
+
+  Future<String> getEmotion(int age, int bmi, int heartRate, int diffHeart) async {
+    return "";
+  }
 }
