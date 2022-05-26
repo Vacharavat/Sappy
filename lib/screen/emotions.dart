@@ -4,11 +4,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:health/health.dart';
 
-class EmotionScreen extends StatefulWidget {
-  const EmotionScreen({Key? key}) : super(key: key);
+class EmotionTestScreen extends StatefulWidget {
+  const EmotionTestScreen({Key? key}) : super(key: key);
 
   @override
-  State<EmotionScreen> createState() => _EmotionScreenState();
+  State<EmotionTestScreen> createState() => _EmotionScreenState();
 }
 
 enum AppState {
@@ -22,10 +22,11 @@ enum AppState {
   STEPS_READY,
 }
 
-class _EmotionScreenState extends State<EmotionScreen> {
+class _EmotionScreenState extends State<EmotionTestScreen> {
   List<HealthDataPoint> _healthDataList = [];
   AppState _state = AppState.DATA_NOT_FETCHED;
-
+  int _nofSteps = 10;
+  double _mgdl = 10.0;
   // create a HealthFactory for use in the app
   HealthFactory health = HealthFactory();
 
@@ -35,6 +36,7 @@ class _EmotionScreenState extends State<EmotionScreen> {
 
     // define the types to get
     final types = [
+      HealthDataType.STEPS,
       HealthDataType.WEIGHT,
       HealthDataType.HEIGHT,
       HealthDataType.HEART_RATE,
@@ -44,6 +46,7 @@ class _EmotionScreenState extends State<EmotionScreen> {
 
     // with coresponsing permissions
     final permissions = [
+      HealthDataAccess.READ,
       HealthDataAccess.READ,
       HealthDataAccess.READ,
       HealthDataAccess.READ,
@@ -90,6 +93,38 @@ class _EmotionScreenState extends State<EmotionScreen> {
     }
   }
 
+  /// Add some random health data.
+  Future addData() async {
+    final now = DateTime.now();
+    final earlier = now.subtract(Duration(minutes: 5));
+
+    _nofSteps = Random().nextInt(10);
+    final types = [HealthDataType.STEPS, HealthDataType.HEART_RATE];
+    final rights = [HealthDataAccess.WRITE, HealthDataAccess.WRITE];
+    final permissions = [
+      HealthDataAccess.READ_WRITE,
+      HealthDataAccess.READ_WRITE
+    ];
+    bool? hasPermissions =
+        await HealthFactory.hasPermissions(types, permissions: rights);
+    if (hasPermissions == false) {
+      await health.requestAuthorization(types, permissions: permissions);
+    }
+
+    _mgdl = Random().nextInt(100) + 50;
+    bool success = await health.writeHealthData(
+        _nofSteps.toDouble(), HealthDataType.STEPS, earlier, now);
+
+    if (success) {
+      success = await health.writeHealthData(
+          _mgdl, HealthDataType.HEART_RATE, now, now);
+    }
+
+    setState(() {
+      _state = success ? AppState.DATA_ADDED : AppState.DATA_NOT_ADDED;
+    });
+  }
+
   /// Fetch steps from the health plugin and show them in the app.
   Future fetchStepData() async {
     int? steps;
@@ -110,6 +145,7 @@ class _EmotionScreenState extends State<EmotionScreen> {
       print('Total number of steps: $steps');
 
       setState(() {
+        _nofSteps = (steps == null) ? 0 : steps;
         _state = (steps == null) ? AppState.NO_DATA : AppState.STEPS_READY;
       });
     } else {
@@ -152,9 +188,9 @@ class _EmotionScreenState extends State<EmotionScreen> {
   Widget _contentNotFetched() {
     return Column(
       children: [
-        Text('Press the download button to fetch data.'),
-        Text('Press the plus button to insert some random data.'),
-        Text('Press the walking button to get total step count.'),
+        Text('กดปุ่ม Download เพื่อดึงข้อมูลล่าสุด.'),
+        Text('กดปุ่ม add เพื่อนำข้อมูลไปจำแนกอารมณ์.'),
+        Text('อารมณ์ล่าสุด : ทั่วไป (Neutral) Heart rate : 87 BPM'),
       ],
       mainAxisAlignment: MainAxisAlignment.center,
     );
@@ -167,11 +203,11 @@ class _EmotionScreenState extends State<EmotionScreen> {
   }
 
   Widget _dataAdded() {
-    return Text('steps and  mgdl are inserted successfully!');
+    return Text('อัตราการเต้นของหัวใจอยู่ที่ $_mgdl BPM. ');
   }
 
   Widget _stepsFetched() {
-    return Text('Total number of steps: ');
+    return Text('Total number of steps: $_nofSteps ');
   }
 
   Widget _dataNotAdded() {
@@ -199,9 +235,10 @@ class _EmotionScreenState extends State<EmotionScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
           appBar: AppBar(
-            title: const Text('Health Example'),
+            title: const Text('Emotion'),
             actions: <Widget>[
               IconButton(
                 icon: Icon(Icons.file_download),
@@ -211,10 +248,16 @@ class _EmotionScreenState extends State<EmotionScreen> {
               ),
               IconButton(
                 onPressed: () {
+                  addData();
+                },
+                icon: Icon(Icons.add),
+              ),
+              IconButton(
+                onPressed: () {
                   fetchStepData();
                 },
-                icon: Icon(Icons.nordic_walking),
-              )
+                icon: Icon(Icons.settings),
+              ),
             ],
           ),
           body: Center(

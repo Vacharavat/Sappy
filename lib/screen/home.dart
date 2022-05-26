@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sappyapp/screen/chat.dart';
-import 'package:sappyapp/screen/emotions.dart';
+
 import 'package:sappyapp/screen/news.dart';
 import 'package:sappyapp/screen/profile.dart';
 import 'package:sappyapp/screen/setting_screen.dart';
+
+import 'emotion_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

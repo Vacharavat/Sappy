@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:sappyapp/model/emotion_check.dart';
 
 import 'package:sappyapp/model/news_article.dart';
 
@@ -21,7 +22,15 @@ class ApiService {
     }
   }
 
-  Future<String> getEmotion(int age, int bmi, int heartRate, int diffHeart) async {
-    return "";
+  Future<Emotion> getEmotion(
+      int age, int bmi, int heartRate, int diffHeart) async {
+    final response = await http.get(Uri.parse(
+        'http://127.0.0.1:8000/emotion?age=$age&bmi=$bmi&heart_rate=$heartRate&diff_heart=$diffHeart'));
+
+    if (response.statusCode == 200) {
+      return Emotion.fromJson(jsonDecode(response.body));
+    } else {
+      throw ("Can't get Emotion");
+    }
   }
 }
