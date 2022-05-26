@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,25 +21,36 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfileState extends State<ProfilePage> {
   User? user = AuthManager().getCurrentUser();
+  Random rd = Random();
+
   String botDisplayName = "Sappy";
+  List<String> botBios = ["วันนี้เป็นวันที่ดีมากเลย", "สุดยอดไปเลย", "เก่งมาก จ๊าบสุด", "สุดจะปังงง!"];
+  String botBio = "";
 
   void fetchUserBotData() async {
     await FirebaseFirestore.instance.collection("users").doc(user?.email).get().then((documentSnapshot) {
       if (documentSnapshot.exists) {
         Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
-        print(data["botDisplayName"]);
         setState(() {
           botDisplayName = data["botDisplayName"];
         });
       }
     }).catchError((error) {
-      print(2);
-      print(error);
+      throw error;
     });
   }
 
-  _ProfileState() {
+  void updateBotBio() {
+    setState(() {
+      botBio = botBios[rd.nextInt(4)];
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
     fetchUserBotData();
+    updateBotBio();
   }
 
   @override
@@ -116,7 +129,7 @@ class _ProfileState extends State<ProfilePage> {
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                           ),
                           Text(
-                            "bio",
+                            botBio,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           )

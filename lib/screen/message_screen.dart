@@ -1,9 +1,16 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' as RB;
 import 'package:sappyapp/components/message_body.dart';
 import 'package:dialog_flowtter/dialog_flowtter.dart';
 import 'package:sappyapp/screen/home.dart';
+
+import '../manager/auth.dart';
 
 class MessageScreen extends StatefulWidget {
   const MessageScreen({Key? key}) : super(key: key);
@@ -13,15 +20,48 @@ class MessageScreen extends StatefulWidget {
 }
 
 class _MessageScreenState extends State<MessageScreen> {
-  late DialogFlowtter dialogFlowtter;
+  User? user = AuthManager().getCurrentUser();
+  String botDisplayName = "Sappy";
+  String userEmotion = "neutral";
   final TextEditingController _controller = TextEditingController();
 
+  late DialogFlowtter dialogFlowtter;
   List<Map<String, dynamic>> messages = [];
+
+  void initialDialogFlowtter() async {
+    await fetchUserData();
+    // print("user emotion => " + userEmotion);
+    String credential = "assets/credentials/dialog_flow_auth_natural.json";
+    if (userEmotion == "happy") {
+      credential = 'assets/credentials/dialog_flow_auth_happy.json';
+    } else if (userEmotion == "sad") {
+      credential = 'assets/credentials/dialog_flow_auth_sad.json';
+    }
+
+    String credentialsJsonString = await RB.rootBundle.loadString(credential);
+    Map<String, dynamic> credentialJson = jsonDecode(credentialsJsonString);
+    dialogFlowtter = DialogFlowtter.fromJson(credentialJson);
+  }
+
+  Future<void> fetchUserData() async {
+    await FirebaseFirestore.instance.collection("users").doc(user?.email).get().then((documentSnapshot) {
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+        // print(data["emotion"]);
+        userEmotion = data["emotion"];
+        setState(() {
+          botDisplayName = data["botDisplayName"];
+        });
+      }
+    }).catchError((error) {
+      throw error;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    DialogFlowtter.fromFile().then((instance) => dialogFlowtter = instance);
+    initialDialogFlowtter();
   }
 
   @override
@@ -44,8 +84,7 @@ class _MessageScreenState extends State<MessageScreen> {
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
                       hintText: "Input message",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25)),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
                       fillColor: Colors.white,
                       filled: true),
                 ),
@@ -104,8 +143,7 @@ class _MessageScreenState extends State<MessageScreen> {
       automaticallyImplyLeading: false,
       title: Row(children: [
         BackButton(onPressed: () {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
             return HomeScreen();
           }));
         }),
@@ -119,7 +157,7 @@ class _MessageScreenState extends State<MessageScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Levi",
+              botDisplayName,
               style: TextStyle(fontSize: 20),
             )
           ],

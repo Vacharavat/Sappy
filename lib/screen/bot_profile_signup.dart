@@ -64,7 +64,6 @@ class _FirstBotProfileState extends State<FirstBotProfile> {
 
   @override
   Widget build(BuildContext context) {
-    print(botDisplayName);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(color: Color(0xFF61B3FF)),
