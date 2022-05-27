@@ -40,7 +40,8 @@ class _EmotionScreenState extends State<EmotionScreen> {
         )
         .then((value) {})
         .catchError((error) {
-          Fluttertoast.showToast(msg: error.message.toString(), gravity: ToastGravity.CENTER);
+          Fluttertoast.showToast(
+              msg: error.message.toString(), gravity: ToastGravity.CENTER);
         });
   }
 
@@ -75,12 +76,12 @@ class _EmotionScreenState extends State<EmotionScreen> {
                     child: CircularProgressIndicator(),
                   )
                 : Center(
-                    child: Text(emotion),
+                    child: Text("Emotion: " + emotion),
                   ),
-            Text("Heart rate: $heartRate Diff Heart: $diffHeart"),
-            ElevatedButton(
+            Text("อัตราการเต้นของหัวใจคุณอยู่ที่: $heartRate bpm. "),
+            IconButton(
               onPressed: randomHeartRate,
-              child: Text("Random Heart Rate"),
+              icon: Icon(Icons.cached),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

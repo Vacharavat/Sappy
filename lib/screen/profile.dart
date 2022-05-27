@@ -24,13 +24,23 @@ class _ProfileState extends State<ProfilePage> {
   Random rd = Random();
 
   String botDisplayName = "Sappy";
-  List<String> botBios = ["วันนี้เป็นวันที่ดีมากเลย", "สุดยอดไปเลย", "เก่งมาก จ๊าบสุด", "สุดจะปังงง!"];
+  List<String> botBios = [
+    "วันนี้เป็นวันที่ดีมากเลย",
+    "สุดยอดไปเลย",
+    "เก่งมาก จ๊าบสุด",
+    "สุดจะปังงง!"
+  ];
   String botBio = "";
 
   void fetchUserBotData() async {
-    await FirebaseFirestore.instance.collection("users").doc(user?.email).get().then((documentSnapshot) {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user?.email)
+        .get()
+        .then((documentSnapshot) {
       if (documentSnapshot.exists) {
-        Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
         setState(() {
           botDisplayName = data["botDisplayName"];
         });
@@ -62,7 +72,8 @@ class _ProfileState extends State<ProfilePage> {
           Container(
             decoration: BoxDecoration(border: Border(bottom: BorderSide())),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0 * 0.75),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0, vertical: 20.0 * 0.75),
               child: Row(
                 children: [
                   user?.photoURL != null
@@ -87,13 +98,14 @@ class _ProfileState extends State<ProfilePage> {
                       children: [
                         Text(
                           user?.displayName ?? "",
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w700),
                         ),
-                        Text(
-                          "bio",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        )
+                        // Text(
+                        //   "bio",
+                        //   maxLines: 1,
+                        //   overflow: TextOverflow.ellipsis,
+                        // )
                       ],
                     ),
                   )),
@@ -105,10 +117,12 @@ class _ProfileState extends State<ProfilePage> {
           Container(
             decoration: BoxDecoration(border: Border(bottom: BorderSide())),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0 * 0.75),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0, vertical: 20.0 * 0.75),
               child: InkWell(
                 onTap: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) {
                     return MessageScreen();
                   }));
                 },
@@ -116,7 +130,8 @@ class _ProfileState extends State<ProfilePage> {
                   children: [
                     CircleAvatar(
                       radius: 30,
-                      backgroundImage: AssetImage("assets/image/botprofile.jpeg"),
+                      backgroundImage:
+                          AssetImage("assets/image/botprofile.jpeg"),
                     ),
                     Expanded(
                         child: Padding(
@@ -126,7 +141,8 @@ class _ProfileState extends State<ProfilePage> {
                         children: [
                           Text(
                             botDisplayName,
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w700),
                           ),
                           Text(
                             botBio,
@@ -138,14 +154,16 @@ class _ProfileState extends State<ProfilePage> {
                     )),
                     IconButton(
                         onPressed: () {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (context) {
                             return MessageScreen();
                           }));
                         },
                         icon: Icon(Icons.chat_bubble)),
                     IconButton(
                         onPressed: () {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (context) {
                             return FirstBotProfile();
                           }));
                         },

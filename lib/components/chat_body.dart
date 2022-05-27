@@ -17,9 +17,14 @@ class _ChatBodyState extends State<ChatBody> {
   String botDisplayName = "Sappy";
 
   void fetchUserBotData() async {
-    await FirebaseFirestore.instance.collection("users").doc(user?.email).get().then((documentSnapshot) {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user?.email)
+        .get()
+        .then((documentSnapshot) {
       if (documentSnapshot.exists) {
-        Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
         setState(() {
           botDisplayName = data["botDisplayName"];
         });
@@ -46,28 +51,33 @@ class _ChatBodyState extends State<ChatBody> {
                 ));
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0 * 0.75),
+            padding: const EdgeInsets.symmetric(
+                horizontal: 20.0, vertical: 20.0 * 0.75),
             child: Row(
               children: [
                 Stack(
                   children: [
                     CircleAvatar(
                       radius: 30,
-                      backgroundImage: AssetImage("assets/image/botprofile.jpeg"),
+                      backgroundImage:
+                          AssetImage("assets/image/botprofile.jpeg"),
                     ),
-                    Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
-                        height: 20,
-                        width: 20,
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 250, 107, 96),
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Color(0xFFFFFFFF), width: 1)),
-                        child: Text("2", style: TextStyle(color: Colors.white), textAlign: TextAlign.center),
-                      ),
-                    )
+                    // Positioned(
+                    //   right: 0,
+                    //   bottom: 0,
+                    //   child: Container(
+                    //     height: 20,
+                    //     width: 20,
+                    //     decoration: BoxDecoration(
+                    //         color: Color.fromARGB(255, 250, 107, 96),
+                    //         shape: BoxShape.circle,
+                    //         border:
+                    //             Border.all(color: Color(0xFFFFFFFF), width: 1)),
+                    //     child: Text("2",
+                    //         style: TextStyle(color: Colors.white),
+                    //         textAlign: TextAlign.center),
+                    //   ),
+                    // )
                   ],
                 ),
                 Expanded(
@@ -78,7 +88,8 @@ class _ChatBodyState extends State<ChatBody> {
                     children: [
                       Text(
                         botDisplayName,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w700),
                       ),
                       SizedBox(height: 6),
                       Opacity(
@@ -92,7 +103,7 @@ class _ChatBodyState extends State<ChatBody> {
                     ],
                   ),
                 )),
-                Opacity(opacity: 0.5, child: Text("2m ago"))
+                // Opacity(opacity: 0.5, child: Text("2m ago"))
               ],
             ),
           ),
